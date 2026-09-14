@@ -1,0 +1,8 @@
+Firebase is connected to the EARNX UI.
+The app creates a users/{telegramId} document on first open.
+
+IMPORTANT:
+- Telegram initDataUnsafe is convenient for UI identification but is NOT a trusted authentication mechanism.
+- Before production, validate Telegram Web App initData on a trusted server/Cloud Function.
+- Never let the client directly award itself points, change balance, or approve withdrawals.
+- Configure restrictive Firestore Security Rules before launch.
