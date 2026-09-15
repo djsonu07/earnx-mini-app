@@ -2,6 +2,7 @@ import React,{useEffect,useState} from "react";
 import {createRoot} from "react-dom/client";
 import {initializeApp} from "firebase/app";
 import {getFirestore,doc,getDoc,setDoc,serverTimestamp} from "firebase/firestore";
+import {getAuth,signInAnonymously} from "firebase/auth";
 import {Home,Target,PlayCircle,Users,Wallet,Headphones,Gift,ArrowUpRight,History,ChevronRight,ShieldCheck,Zap,Menu,X} from "lucide-react";
 import "./styles.css";
 
@@ -14,7 +15,9 @@ const firebaseConfig={
  appId:"1:237247068603:web:111cda0e4d9433c67cac9e",
  measurementId:"G-RS1Z0TCZN5"
 };
-const db=getFirestore(initializeApp(firebaseConfig));
+const firebaseApp=initializeApp(firebaseConfig);
+const auth=getAuth(firebaseApp);
+const db=getFirestore(firebaseApp);
 const nav=[["home","Home",Home],["missions","Missions",Target],["earn","Earn",PlayCircle],["team","Team",Users],["wallet","Wallet",Wallet]];
 const missions=[["Watch 5 ads","3 / 5",30],["Complete 3 tasks","1 / 3",50],["Invite 2 friends","0 / 2",100]];
 const tx=[["Ad reward","+10 pts","Today"],["Task completed","+50 pts","Yesterday"],["Withdrawal","-₹25.00","12 Sep"]];
@@ -24,6 +27,7 @@ function telegramUser(){
  return u||{id:"demo",first_name:"Guest",username:"guest"};
 }
 async function ensureUser(){
+ await signInAnonymously(auth);
  const u=telegramUser(), id=String(u.id), ref=doc(db,"users",id), snap=await getDoc(ref);
  if(!snap.exists()) await setDoc(ref,{telegramId:id,firstName:u.first_name||"",lastName:u.last_name||"",username:u.username||"",points:0,balance:0,referralCode:"EX"+id.slice(-6).toUpperCase(),referredBy:null,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
  else await setDoc(ref,{updatedAt:serverTimestamp()},{merge:true});
@@ -31,12 +35,12 @@ async function ensureUser(){
 }
 
 function App(){
- const [page,setPage]=useState("home"),[menu,setMenu]=useState(false),[user,setUser]=useState(null);
- useEffect(()=>{window.Telegram?.WebApp?.ready?.();window.Telegram?.WebApp?.expand?.();ensureUser().then(setUser).catch(console.error)},[]);
+ const [page,setPage]=useState("home"),[menu,setMenu]=useState(false),[user,setUser]=useState(null),[fbError,setFbError]=useState("");
+ useEffect(()=>{window.Telegram?.WebApp?.ready?.();window.Telegram?.WebApp?.expand?.();ensureUser().then(setUser).catch(e=>{console.error(e);setFbError(e?.code||e?.message||"Firebase error")})},[]);
  const go=p=>{setPage(p);setMenu(false)};
  return <div className="app"><header><div className="brand"><div className="logo">E</div><div><b>EARNX</b><span>Earn smarter</span></div></div><button className="icon" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button></header>
  {menu&&<div className="drawer"><button onClick={()=>go("bonus")}><Gift/>Daily Bonus</button><button onClick={()=>go("support")}><Headphones/>Customer Service</button><button onClick={()=>go("transactions")}><History/>Transactions</button></div>}
- <main>{page==="home"&&<HomePage go={go} user={user}/>} {page==="missions"&&<Missions/>} {page==="earn"&&<Earn/>} {page==="team"&&<Team/>} {page==="wallet"&&<WalletPage go={go}/>} {page==="transactions"&&<Transactions/>} {page==="bonus"&&<Bonus/>} {page==="support"&&<Support/>} {page==="withdraw"&&<Withdraw/>}</main>
+ {fbError&&<div className="fbError">Firebase: {fbError}</div>}<main>{page==="home"&&<HomePage go={go} user={user}/>} {page==="missions"&&<Missions/>} {page==="earn"&&<Earn/>} {page==="team"&&<Team/>} {page==="wallet"&&<WalletPage go={go}/>} {page==="transactions"&&<Transactions/>} {page==="bonus"&&<Bonus/>} {page==="support"&&<Support/>} {page==="withdraw"&&<Withdraw/>}</main>
  <nav className="bottom">{nav.map(([id,l,I])=><button className={page===id?"active":""} onClick={()=>go(id)} key={id}><I/><small>{l}</small></button>)}</nav></div>
 }
 function HomePage({go,user}){return <><section className="hero"><div className="hello">Welcome back {user?.firstName||"Guest"} 👋</div><h1>₹{Number(user?.balance||0).toFixed(2)}</h1><p>{user?.points||0} Points · 50 pts = ₹1</p><div className="streak">🔥 4 day earning streak</div></section><div className="grid2"><Card icon={<Zap/>} title="Quick Earn" text="Watch & complete" onClick={()=>go("earn")}/><Card icon={<Gift/>} title="Daily Bonus" text="Claim today's reward" onClick={()=>go("bonus")}/></div><section className="section"><div className="sectionHead"><h2>Today's Missions</h2><button onClick={()=>go("missions")}>View all <ChevronRight/></button></div>{missions.slice(0,2).map(m=><Mission m={m} key={m[0]}/>)}</section><section className="trust"><ShieldCheck/><div><b>Safe & transparent rewards</b><span>Track every earning and withdrawal.</span></div></section></>}
