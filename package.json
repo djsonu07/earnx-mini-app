@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "set-admin": "node scripts/set-admin-claim.mjs"
+    "set-admin": "node scripts/set-admin-claim.mjs",
+    "setup-admin": "node scripts/setup-admin.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",

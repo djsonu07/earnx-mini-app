@@ -1,17 +1,10 @@
-EARNX Monetag setup
+EARNX MONETAG ALL ADS
 
-Monetag SDK is installed in index.html:
-<script src="//libtl.com/sdk.js" data-zone="11809504" data-sdk="show_11809504"></script>
+Zone: 11809504
+SDK is installed in index.html.
 
-Integrated ad formats:
-1. In-App Interstitial (no reward): starts automatically 5 seconds after app load with:
-   frequency: 2, capping: 0.1, interval: 30, timeout: 5, everyPage: false
-2. Rewarded Popup: WATCH REWARDED POPUP button calls show_11809504('pop').
-3. Rewarded Interstitial: WATCH REWARDED INTERSTITIAL button calls show_11809504().
+In-App Interstitial is configured to attempt automatic display after 5 seconds and then about every 60 seconds, subject to Monetag availability/capping and Telegram WebView behavior.
 
-Reward behavior:
-- Rewarded Popup and Rewarded Interstitial award 20 points after the Monetag promise resolves successfully.
-- 50 points = ₹1, so 20 points = ₹0.40.
-- In-App Interstitial gives no reward.
-- Do not self-click ads or encourage invalid/repeated clicks.
-- Keep the reward amount within your Monetag program/publisher terms.
+Rewarded Popup and Rewarded Interstitial code is retained in the project integration, but the Watch & Earn page has NO manual watch/reward button as requested.
+
+Do not self-click ads or encourage repeated ad clicks. Monetag may apply its own frequency/capping rules.
