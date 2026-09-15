@@ -1,12 +1,20 @@
-ADMIN SETUP
+EARNX SECURE ADMIN SETUP
 
-Open src/main.jsx and find:
-const ADMIN_TELEGRAM_IDS=["REPLACE_WITH_YOUR_TELEGRAM_ID"];
+The old frontend Telegram-ID + PIN gate is removed.
+Admin access now requires Firebase Authentication (Email/Password) AND Custom Claim admin=true.
 
-Replace the placeholder with your own Telegram numeric user ID.
-Example:
-const ADMIN_TELEGRAM_IDS=["123456789"];
+1. Firebase Console -> Authentication -> Sign-in method -> enable Email/Password.
+2. Create your admin user with a strong password.
+3. Firebase Console -> Project settings -> Service accounts -> Generate new private key.
+4. Save the JSON OUTSIDE this project and never upload/commit it.
+5. On your PC, set GOOGLE_APPLICATION_CREDENTIALS to that JSON path.
+6. In this project run:
+   npm install
+   npm run set-admin -- YOUR_ADMIN_EMAIL
+7. Sign out/in and open EARNX Admin.
 
-Then deploy. Open your app and add #admin to the URL, or use the menu's Admin Panel entry.
-
-IMPORTANT: This client-side admin gate is only a starter/demo management panel. It is NOT a secure production admin authorization mechanism because the code is shipped to the browser. Before real-money production use, move admin authorization and reward/withdrawal writes to a trusted backend or Firebase custom claims.
+SECURITY
+- No admin PIN or service-account key is shipped in frontend code.
+- Firestore admin writes require request.auth.token.admin == true.
+- Keep the service-account JSON private.
+- For complete production hardening, move reward/withdrawal balance mutations to trusted Cloud Functions/backend and verify Telegram WebApp initData server-side.

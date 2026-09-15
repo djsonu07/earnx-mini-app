@@ -1,20 +1,17 @@
-EARNX MONETAG SETUP
+EARNX Monetag setup
 
-1. Create/verify your site/domain in Monetag.
-2. Create a MultiTag or another ad zone.
-3. Copy the actual Monetag ad tag from Monetag.
-4. Paste the tag in index.html immediately below <head> where the placeholder comment is.
-5. For SmartLink, put your actual SmartLink URL in src/main.jsx:
-   const MONETAG_SMARTLINK="YOUR_REAL_SMARTLINK";
-6. Deploy again on Vercel.
+Monetag SDK is installed in index.html:
+<script src="//libtl.com/sdk.js" data-zone="11809504" data-sdk="show_11809504"></script>
 
-Do NOT invent a zone ID or use somebody else's ad code.
-Do NOT click your own ads or force users to click ads. Monetag controls ad delivery/frequency.
+Integrated ad formats:
+1. In-App Interstitial (no reward): starts automatically 5 seconds after app load with:
+   frequency: 2, capping: 0.1, interval: 30, timeout: 5, everyPage: false
+2. Rewarded Popup: WATCH REWARDED POPUP button calls show_11809504('pop').
+3. Rewarded Interstitial: WATCH REWARDED INTERSTITIAL button calls show_11809504().
 
-EARNX reward economics in this build:
-50 points = ₹1
-Minimum withdrawal = ₹25
-Daily bonus = 25 points
-Task rewards are configured by admin.
-
-Your actual publisher income is NOT guaranteed. It depends on Monetag traffic, geography, ad format, fill, CPM/eCPM, advertiser demand and policy compliance.
+Reward behavior:
+- Rewarded Popup and Rewarded Interstitial award 20 points after the Monetag promise resolves successfully.
+- 50 points = ₹1, so 20 points = ₹0.40.
+- In-App Interstitial gives no reward.
+- Do not self-click ads or encourage invalid/repeated clicks.
+- Keep the reward amount within your Monetag program/publisher terms.

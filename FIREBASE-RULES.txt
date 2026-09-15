@@ -1,10 +1,29 @@
-TEMPORARY TEST RULES — use only while testing EARNX. Replace with production-secure server/custom-claims rules before launch.
+EARNX production-oriented Firestore rules
 
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth != null;
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && request.auth.token.admin == true; }
+
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == resource.data.authUid || isAdmin());
+      allow create: if signedIn() && request.auth.uid == request.resource.data.authUid;
+      allow update: if signedIn() && (request.auth.uid == resource.data.authUid || isAdmin());
+      allow delete: if isAdmin();
     }
+    match /tasks/{taskId} { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /withdrawals/{withdrawalId} {
+      allow create: if signedIn();
+      allow read: if isAdmin() || (signedIn() && resource.data.authUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+    match /transactions/{transactionId} {
+      allow create: if signedIn() && request.resource.data.authUid == request.auth.uid;
+      allow read: if isAdmin() || (signedIn() && resource.data.authUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+    match /dailyBonus/{bonusId} { allow read, write: if signedIn(); }
+    match /taskClaims/{claimId} { allow read, write: if signedIn(); }
   }
 }
