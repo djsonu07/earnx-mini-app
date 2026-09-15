@@ -1,0 +1,12 @@
+ADMIN SETUP
+
+Open src/main.jsx and find:
+const ADMIN_TELEGRAM_IDS=["REPLACE_WITH_YOUR_TELEGRAM_ID"];
+
+Replace the placeholder with your own Telegram numeric user ID.
+Example:
+const ADMIN_TELEGRAM_IDS=["123456789"];
+
+Then deploy. Open your app and add #admin to the URL, or use the menu's Admin Panel entry.
+
+IMPORTANT: This client-side admin gate is only a starter/demo management panel. It is NOT a secure production admin authorization mechanism because the code is shipped to the browser. Before real-money production use, move admin authorization and reward/withdrawal writes to a trusted backend or Firebase custom claims.
