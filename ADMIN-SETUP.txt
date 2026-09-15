@@ -1,13 +1,7 @@
-EARNX SIMPLE ADMIN LOGIN
+ADMIN LOGIN
 
-1. Open src/main.jsx.
-2. Find:
-   const ADMIN_TELEGRAM_ID="YOUR_TELEGRAM_ID";
-   const ADMIN_PIN="CHANGE_ME_1234";
-3. Replace YOUR_TELEGRAM_ID with your numeric Telegram ID.
-4. Change CHANGE_ME_1234 to your own PIN.
-5. Save, build and deploy.
-6. Open EARNX -> Menu -> Admin Panel.
-7. Enter the same Telegram ID and PIN.
+Open src/main.jsx and change:
+const ADMIN_TELEGRAM_IDS=["REPLACE_WITH_YOUR_TELEGRAM_ID"];
 
-Note: This is a simple frontend gate, not server-side security. Do not use a sensitive password here.
+Replace the value with your Telegram numeric ID.
+Then deploy again.
