@@ -1,4 +1,4 @@
-TEMPORARY TEST RULES ONLY — NOT PRODUCTION SAFE.
+TEMPORARY TEST RULES — use only while testing EARNX. Replace with production-secure server/custom-claims rules before launch.
 
 rules_version = '2';
 service cloud.firestore {
@@ -8,5 +8,3 @@ service cloud.firestore {
     }
   }
 }
-
-IMPORTANT: For production, do NOT leave this rule. Reward, balance and withdrawal approval must be protected by trusted server logic / Firebase custom claims.
