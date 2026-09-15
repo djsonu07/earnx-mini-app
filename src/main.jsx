@@ -8,9 +8,9 @@ import "./styles.css";
 
 const firebaseConfig={apiKey:"AIzaSyCh6JY-myXiqosLPd0x38TVqfOKeMzxb6A",authDomain:"earnx-e873d.firebaseapp.com",projectId:"earnx-e873d",storageBucket:"earnx-e873d.firebasestorage.app",messagingSenderId:"237247068603",appId:"1:237247068603:web:111cda0e4d9433c67cac9e",measurementId:"G-RS1Z0TCZN5"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
-const POINTS_PER_RUPEE=65,MIN_WITHDRAW=30;
-const ADMIN_TELEGRAM_ID="7996742160";
-const ADMIN_PIN="153580";
+const POINTS_PER_RUPEE=50,MIN_WITHDRAW=25;
+const ADMIN_TELEGRAM_ID="YOUR_TELEGRAM_ID";
+const ADMIN_PIN="CHANGE_ME_1234";
 
 function tgUser(){return window.Telegram?.WebApp?.initDataUnsafe?.user||{id:"demo",first_name:"Guest",username:"guest"}}
 async function ensureUser(){await signInAnonymously(auth);const u=tgUser(),id=String(u.id),r=doc(db,"users",id),s=await getDoc(r);if(!s.exists())await setDoc(r,{authUid:auth.currentUser.uid,telegramId:id,firstName:u.first_name||"",lastName:u.last_name||"",username:u.username||"",points:0,balance:0,referralCode:"EX"+id.slice(-6).toUpperCase(),referredBy:null,referralCount:0,referralEarned:0,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});else await setDoc(r,{authUid:auth.currentUser.uid,firstName:u.first_name||"",lastName:u.last_name||"",username:u.username||"",updatedAt:serverTimestamp()},{merge:true});return (await getDoc(r)).data()}
